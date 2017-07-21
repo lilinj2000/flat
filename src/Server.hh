@@ -28,8 +28,8 @@ class Server :
 
   virtual void onRtnOrder(
       int order_ref,
-      const std::string& order_status,
-      const std::string& status_msg);
+      int error_id,
+      const std::string& err_msg);
 
   virtual void onRtnTrade(
       int order_ref,

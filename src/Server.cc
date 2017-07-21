@@ -49,26 +49,20 @@ void Server::onRspOrderInsert(int order_ref) {
 
 void Server::onRtnOrder(
     int order_ref,
-    const std::string& order_status,
-    const std::string& status_msg) {
+    int error_id,
+    const std::string& err_msg) {
   FLAT_TRACE <<"Server::onRtnOrder()";
 
   FLAT_DEBUG <<"order_ref = " <<order_ref
-             <<"; order_status = " <<order_status
-             <<"; status_msg = " <<status_msg;
+             <<"; error_id = " <<error_id
+             <<"; err_msg = " <<err_msg;
 
   auto it = records_.find(order_ref);
 
   if (it != records_.end()) {
-    if (order_status == "a") {
-      it->second->updateT1();
-    } else if (order_status == "5") {
-      it->second->updateT2();
-      timestamp_file_->putData(it->second);
-      records_.erase(it);
-    } else {
-      FLAT_ERROR <<"the order status is wrong, order_status " <<order_status;
-    }
+    it->second->updateT2();
+    timestamp_file_->putData(it->second);
+    records_.erase(it);
   } else {
     FLAT_ERROR <<"unexpected the rtn order, the order ref is " <<order_ref;
   }
